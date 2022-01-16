@@ -12,6 +12,8 @@ namespace PMan.DataService
 
         }
 
+        public virtual DbSet<Project> Projects { get; set; }
+        public virtual DbSet<Issue> Issues { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -41,6 +43,25 @@ namespace PMan.DataService
                 .HasMaxLength(250)
                 .IsRequired(true)
                 .HasDefaultValue(null);
+
+            builder.Entity<ApplicationUser>()
+                .HasMany(p => p.Projects)
+                .WithMany(p => p.Users)
+                .UsingEntity<ProjectUser>(
+                    j => j
+                        .HasOne(pt => pt.Project)
+                        .WithMany(t => t.ProjectUsers)
+                        .HasForeignKey(pt => pt.ProjectId),
+                    j => j
+                        .HasOne(pt => pt.User)
+                        .WithMany(p => p.ProjectUsers)
+                        .HasForeignKey(pt => pt.UserId),
+                    j =>
+                    {
+                        j.Property(pt => pt.Role);
+                        j.HasKey(t => new { t.ProjectId, t.UserId });
+                    }
+                );
         }
 
     }

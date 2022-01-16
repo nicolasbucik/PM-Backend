@@ -16,5 +16,8 @@ namespace PMan.Core.Models
 
         [Required]
         public string? LastName { get; set; }
+        public bool IsAdmin { get; set; } = false;
+        public ICollection<Project>? Projects { get; set; }
+        public List<ProjectUser>? ProjectUsers { get; set; }
     }
 }

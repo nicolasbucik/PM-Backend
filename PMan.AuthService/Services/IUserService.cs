@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -84,11 +85,18 @@ namespace PMan.AuthService.Services
                     Message = "Errors occured when trying to log in",
                     Errors = new List<string>() { "Invalid credentials." },
                 };
+            var claims = new[]
+            {
+                new Claim("Email", user.Email),
+                new Claim(ClaimTypes.NameIdentifier, user.Id)
+            };
+
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["AuthSettings:Key"]));
             var token = new JwtSecurityToken(
                     issuer: _configuration["AuthSettings:Issuer"],
                     audience: _configuration["AuthSettings:Audience"],
+                    claims: claims,
                     expires: DateTime.Now.AddDays(30),
                     signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256)
                 );

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PMan.DataService;
 
@@ -10,9 +11,10 @@ using PMan.DataService;
 namespace PMan.DataService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220109225935_RelationShip_User_Project")]
+    partial class RelationShip_User_Project
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "6.0.1");
@@ -170,9 +172,6 @@ namespace PMan.DataService.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("IsAdmin")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasMaxLength(250)
@@ -217,52 +216,6 @@ namespace PMan.DataService.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("PMan.Core.Models.Issue", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("AssignedTo")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Description")
-                        .HasMaxLength(500)
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime?>("EndTime")
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool?>("IsFinished")
-                        .IsRequired()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("Priority")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("ProjectId")
-                        .IsRequired()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime?>("StartTime")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("Type")
-                        .IsRequired()
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("id");
-
-                    b.HasIndex("ProjectId");
-
-                    b.ToTable("Issues");
-                });
-
             modelBuilder.Entity("PMan.Core.Models.Project", b =>
                 {
                     b.Property<int>("Id")
@@ -270,36 +223,24 @@ namespace PMan.DataService.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(500)
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("UserId1")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId1");
+
                     b.ToTable("Projects");
-                });
-
-            modelBuilder.Entity("PMan.Core.Models.ProjectUser", b =>
-                {
-                    b.Property<int?>("ProjectId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<int?>("Role")
-                        .IsRequired()
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("ProjectId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ProjectUser");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -353,46 +294,18 @@ namespace PMan.DataService.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("PMan.Core.Models.Issue", b =>
+            modelBuilder.Entity("PMan.Core.Models.Project", b =>
                 {
-                    b.HasOne("PMan.Core.Models.Project", "Project")
-                        .WithMany("Issues")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Project");
-                });
-
-            modelBuilder.Entity("PMan.Core.Models.ProjectUser", b =>
-                {
-                    b.HasOne("PMan.Core.Models.Project", "Project")
-                        .WithMany("ProjectUsers")
-                        .HasForeignKey("ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("PMan.Core.Models.ApplicationUser", "User")
-                        .WithMany("ProjectUsers")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Project");
+                        .WithMany("Projects")
+                        .HasForeignKey("UserId1");
 
                     b.Navigation("User");
                 });
 
             modelBuilder.Entity("PMan.Core.Models.ApplicationUser", b =>
                 {
-                    b.Navigation("ProjectUsers");
-                });
-
-            modelBuilder.Entity("PMan.Core.Models.Project", b =>
-                {
-                    b.Navigation("Issues");
-
-                    b.Navigation("ProjectUsers");
+                    b.Navigation("Projects");
                 });
 #pragma warning restore 612, 618
         }

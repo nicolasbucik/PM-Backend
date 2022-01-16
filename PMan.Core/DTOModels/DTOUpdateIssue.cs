@@ -8,11 +8,8 @@ using System.Threading.Tasks;
 
 namespace PMan.Core.DTOModels
 {
-    public class DTOIssue
+    public class DTOUpdateIssue
     {
-
-        public int? IssueId { get; set; }
-
         [Required]
         [StringLength(100)]
         public string? Name { get; set; }
@@ -26,10 +23,10 @@ namespace PMan.Core.DTOModels
         [Required]
         public int? Type { get; set; }
 
-        [Issue_CreateEnsureStartTimeFuture]
+        [Issue_UpdateEnsureStartTimeFuture]
         public DateTime? StartTime { get; set; }
 
-        [Issue_CreateEnsureEndTimePastStartTime]
+        [Issue_UpdateEnsureEndTimePastStartTime]
         public DateTime? EndTime { get; set; }
 
         [Required]
@@ -38,9 +35,7 @@ namespace PMan.Core.DTOModels
         [EmailAddress]
         [StringLength(50)]
         public string? AssignedTo { get; set; }
-         
-        [Required]
-        public int? ProjectId { get; set; }
+
 
         public bool ValidateStartTimeFuture()
         {
@@ -57,8 +52,4 @@ namespace PMan.Core.DTOModels
             return EndTime.Value.Date > StartTime.Value.Date;
         }
     }
-
-
-
-
 }
